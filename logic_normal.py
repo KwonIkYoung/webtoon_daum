@@ -181,39 +181,50 @@ class LogicNormal(object):
     def analysis(nickname):
         ret = {}
         try:
-            url = 'http://webtoon.daum.net/data/pc/webtoon/view/%s' % (nickname)
-            data = requests.get(url).json()
-            #logger.debug(data)
-            ret['status'] = data['result']['status']
-            if ret['status'] != '200':
-                ret['ret'] = 'error'
-                ret['log'] = data['result']['message']
-                return ret
+            url = 'https://gateway-kw.kakao.com/episode/v1/views/content-home/contents/%s/episodes?sort=-NO&offset=0&limit=300' % str(nickname)
+            requestResult = requests.get(url).json()
+            data = requestResult['data']
+            logger.debug(data)
+            # ret['status'] = data
+            # if ret['status'] != '200':
+            #     ret['ret'] = 'error'
+            #     ret['log'] = data['result']['message']
+            #     return ret
 
-            ret['title'] = data['data']['webtoon']['title']
-            ret['nickname'] = data['data']['webtoon']['nickname']
-            ret['id'] = data['data']['webtoon']['id']
-            ret['image'] = data['data']['webtoon']['pcThumbnailImage']['url']
-            ret['desc'] = data['data']['webtoon']['introduction']
+            ret['title'] = ""
+            ret['nickname'] = ""
+            ret['id'] = str(nickname)
+            ret['image'] = ""
+            ret['desc'] = ""
+            
+            # ret['title'] = data['data']['webtoon']['title']
+            # ret['nickname'] = data['data']['webtoon']['nickname']
+            # ret['id'] = data['data']['webtoon']['id']
+            # ret['image'] = data['data']['webtoon']['pcThumbnailImage']['url']
+            # ret['desc'] = data['data']['webtoon']['introduction']
             try:
                 ret['author'] = data['data']['webtoon']['cp']['name']
             except:
                 ret['author'] = ''
 
             ret['episodes'] = []
-            for epi in data['data']['webtoon']['webtoonEpisodes']:
+            lastEpi = False
+            for epi in data['episodes']:
                 try:
                     entity = {}
                     entity['episode_id'] = epi['id']
-                    entity['episode_idx'] = epi['episode']
-                    entity['episode_title'] = epi['title']
-                    entity['image'] = epi['thumbnailImage']['url']
-                    entity['price'] = epi['price']
-                    entity['date'] = '%s-%s-%s' % (epi['dateCreated'][:4], epi['dateCreated'][4:6], epi['dateCreated'][6:8])
+                    entity['episode_idx'] = epi['no']
+                    entity['episode_title'] = epi['seoId']
+                    entity['image'] = epi['asset']['thumbnailImage']
+                    entity['price'] = epi['useType']
+                    entity['date'] = '%s-%s-%s' % (epi['useStartDateTime'][:4], epi['useStartDateTime'][4:6], epi['useStartDateTime'][6:8])
                     ret['episodes'].append(entity)
+                    if (lastEpi == False && epi['useType'] == 'FREE') :
+                        lastEpi = True
+                        ret['latestEpisode'] = {'episode_id':epi['id'], 'episode_idx':epi['no'], 'episode_title':epi['seoId'], 'price':epi['useType']}
+
                 except:
                     pass
-            ret['latestEpisode'] = {'episode_id':data['data']['webtoon']['latestWebtoonEpisode']['id'], 'episode_idx':data['data']['webtoon']['latestWebtoonEpisode']['episode'], 'episode_title':data['data']['webtoon']['latestWebtoonEpisode']['title'], 'price':data['data']['webtoon']['latestWebtoonEpisode']['price']}
 
             ret['ret'] = 'success'
 
