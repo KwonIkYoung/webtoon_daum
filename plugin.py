@@ -42,12 +42,12 @@ menu = {
 }
 
 plugin_info = {
-    'version' : '0.1.0.0',
-    'name' : 'webtoon_daum',
+    'version' : '0.1.1.0',
+    'name' : 'webtoon_daum_2',
     'category_name' : 'service',
     'developer' : 'soju6jan',
-    'description' : u'다음 웹툰 다운로드',
-    'home' : 'https://github.com/soju6jan/webtoon_daum',
+    'description' : u'다음 웹툰 다운로드 2',
+    'home' : 'https://github.com/KwonIkYoung/webtoon_daum',
     'more' : '',
 }
 
