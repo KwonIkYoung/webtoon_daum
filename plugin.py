@@ -34,7 +34,7 @@ from .logic_normal import LogicNormal
 blueprint = Blueprint(package_name, package_name, url_prefix='/%s' %  package_name, template_folder=os.path.join(os.path.dirname(__file__), 'templates'))
 
 menu = {
-    'main' : [package_name, u'다음 웹툰 다운로드'],
+    'main' : [package_name, u'카 웹툰 다운로드'],
     'sub' : [
         ['setting', u'설정'], ['request', u'요청'], ['queue', u'큐'], ['list', u'목록'], ['log', u'로그']
     ],
